@@ -33,17 +33,17 @@ struct context {
   uint ebp;
   uint eip;
 };
-struct arguments{
+struct argument{
   char type[10];
   char value[10];
-}
+};
 
 struct systemcall {
   int syscall_number;
   char syscall_name[30];
   struct rtcdate time;
   int caller_pid;
-  arguments[3];
+  struct argument arguments[3];
   // char* argumants[10];
 };
 
