@@ -23,6 +23,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int inc_num(int);
 void invoked_syscalls(int pid);
 void sort_syscalls(int pid);
 int  get_count(int pid,int sysnum);

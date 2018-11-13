@@ -103,6 +103,7 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_inc_num(void);
 extern int sys_invoked_syscalls(void);
 
 static int (*syscalls[])(void) = {
@@ -127,6 +128,7 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_inc_num] sys_inc_num,
 [SYS_invoked_syscalls] sys_invoked_syscalls,
 };
 

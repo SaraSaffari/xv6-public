@@ -120,6 +120,7 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int				inc_num(int);
 void			invoked_syscalls(int pid);
 void			sort_syscalls(int pid);
 int 			get_count(int pid,int sysnum);

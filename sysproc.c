@@ -145,6 +145,22 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+int sys_inc_num(void)
+{
+  struct proc *curproc = myproc();
+  int before; 
+  int s;
+
+  if(argint(0, &s) < 0)
+    return -1;
+  before = curproc->tf->eax;
+
+  curproc->tf->eax = s;
+  inc_num(s);
+  
+  curproc->tf->eax = before;
+  return 0;
+}
 int sys_invoked_syscalls(void)
 {
     int pid;

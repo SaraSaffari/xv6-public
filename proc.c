@@ -657,7 +657,13 @@ procdump(void)
     cprintf("\n");
   }
 }
-// int map_syscall_id_to_name
+int inc_num(int s)
+{
+  int temp;
+  temp = s +1;
+  cprintf("%d  is new\n", temp);
+  return 0;
+}
 void invoked_syscalls(int pid)
 {
   struct proc *p;
