@@ -752,6 +752,7 @@ void invoked_syscalls(int pid)
       for (i = 0; i<p->number_of_systemcalls;i++)
       {
         cprintf("%d %s %d \n",p->syscalls[i].syscall_number,sysnumber_to_name(p->syscalls[i].syscall_number),p->syscalls[i].caller_pid);
+        cprintf("time : %d / %d /%d  %d:%d:%d \n",p->syscalls[i].time.year,p->syscalls[i].time.month,p->syscalls[i].time.day,p->syscalls[i].time.hour,p->syscalls[i].time.minute,p->syscalls[i].time.second);
       }
       return;
     }
