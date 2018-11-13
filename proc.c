@@ -6,10 +6,22 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "date.h"
+
+
+
+/*struct systemcall {
+  int syscall_number;
+  char syscall_name[30];
+  struct rtcdate time;
+  int caller_pid;
+  //char argumants[10];
+};*/
 
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
+  //struct systemcall systemcalls[300];
 } ptable;
 
 static struct proc *initproc;
@@ -25,6 +37,59 @@ pinit(void)
 {
   initlock(&ptable.lock, "ptable");
 }
+int power(int n)
+{
+  if (n <= 0) return 1;
+  return 10 * power(--n);
+}
+
+
+//function to convert integer to char*
+/*char * int_to_char(int n)
+{
+  int i = 1;
+  int temp = n;
+  char rslt[100];
+  while((temp = temp/10) > 0)
+  {
+    i++;
+  }
+  temp = n;
+  rslt[i] = '\0';
+  while(i>0)
+  {
+    rslt[i-1] = temp%10 + '0';
+    temp = temp/10;
+    //printf("%c\n",rslt[i-1]);
+    i--;
+  }
+  return (char *) rslt;
+}*/
+
+//function to add 2 charecters
+/*char* append_(char * a,char*b)
+{
+  char complete[1024];
+  char s;
+  int i,j = 0;
+  s = a[i];
+  while(s != '\0')
+  {
+    complete[i] = s;
+    i++;
+    s= a[i]
+  }
+  s = b[j];
+  while(s != '\0')
+  {
+    complete[i+j] = s;
+    j++;
+    s = b[j];
+  }
+  complete[i+j] = '\0';
+
+  return complete;
+}*/
 
 // Must be called with interrupts disabled
 int
@@ -138,6 +203,7 @@ userinit(void)
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
+  p->number_of_systemcalls = 0;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -189,6 +255,14 @@ fork(void)
     return -1;
   }
 
+  struct systemcall fork_syscall;
+  fork_syscall.syscall_number = 1;
+  // fork_syscall.syscall_name = "fork";
+  fork_syscall.syscall_name[4] = '\0';
+  //fork_syscall.time = malloc(sizeof(struct rtcdate));
+  cmostime(&fork_syscall.time);
+
+
   // Copy process state from proc.
   if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
     kfree(np->kstack);
@@ -196,6 +270,7 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
+  np->number_of_systemcalls = 0;
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
@@ -211,7 +286,12 @@ fork(void)
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
   pid = np->pid;
-
+  fork_syscall.caller_pid = curproc->pid;
+  //fork_syscall->argumants = malloc(sizeof(char * 4));
+  //fork_syscall->argumants = "void";
+  //fork_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = fork_syscall;
+  curproc->number_of_systemcalls++;
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
@@ -231,8 +311,23 @@ exit(void)
   struct proc *p;
   int fd;
 
+  struct systemcall exit_syscall;
+  exit_syscall.syscall_number = 2;
+  // exit_syscall.syscall_name = "exit";
+  exit_syscall.syscall_name[4] = '\0';
+  //exit_syscall.time = malloc(sizeof(struct rtcdate));
+  cmostime(&exit_syscall.time);
+  exit_syscall.caller_pid = curproc->pid;
+  //exit_syscall.argumants = malloc(sizeof(char * 4));
+  //exit_syscall.argumants = "void";
+  //exit_syscall.argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = exit_syscall;
+  curproc->number_of_systemcalls++;
+
   if(curproc == initproc)
-    panic("init exiting");
+  {
+    panic("init exiting"); 
+  }
 
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
@@ -275,6 +370,20 @@ wait(void)
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
+
+
+  struct systemcall wait_syscall ;
+  wait_syscall.syscall_number = 3;
+  // wait_syscall.syscall_name = "wait";
+  wait_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&wait_syscall.time);
+  wait_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = wait_syscall;
+  curproc->number_of_systemcalls++;
   
   acquire(&ptable.lock);
   for(;;){
@@ -418,6 +527,8 @@ void
 sleep(void *chan, struct spinlock *lk)
 {
   struct proc *p = myproc();
+
+
   
   if(p == 0)
     panic("sleep");
@@ -480,6 +591,20 @@ int
 kill(int pid)
 {
   struct proc *p;
+  struct proc *curproc = myproc();
+  struct systemcall kill_syscall ;
+  kill_syscall.syscall_number = 6;
+  // kill_syscall.syscall_name = "kill";
+  kill_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&kill_syscall.time);
+  kill_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = kill_syscall;
+  curproc->number_of_systemcalls++;
+
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -531,4 +656,24 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+// int map_syscall_id_to_name
+void invoked_syscalls(int pid)
+{
+  struct proc *p;
+  int i;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      for (i = 0; i<p->number_of_systemcalls;i++)
+      {
+        cprintf("%d %s %d \n",p->syscalls[i].syscall_number,p->syscalls[i].syscall_name,p->syscalls[i].caller_pid);
+      }
+      return;
+    }
+  }
+  release(&ptable.lock);
+  cprintf("pid doesn't exist\n");
+  return;
+
 }

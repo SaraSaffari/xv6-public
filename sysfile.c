@@ -57,6 +57,19 @@ sys_dup(void)
 {
   struct file *f;
   int fd;
+  struct proc *curproc = myproc();
+  struct systemcall dup_syscall ;
+  dup_syscall.syscall_number = 10;
+  // dup_syscall.syscall_name = "dup";
+  dup_syscall.syscall_name[3] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&dup_syscall.time);
+  dup_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = dup_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argfd(0, 0, &f) < 0)
     return -1;
@@ -72,6 +85,19 @@ sys_read(void)
   struct file *f;
   int n;
   char *p;
+  struct proc *curproc = myproc();
+  struct systemcall read_syscall ;
+  read_syscall.syscall_number = 5;
+  // read_syscall.syscall_name = "read";
+  read_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&read_syscall.time);
+  read_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = read_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0)
     return -1;
@@ -85,6 +111,20 @@ sys_write(void)
   int n;
   char *p;
 
+  struct proc *curproc = myproc();
+  struct systemcall write_syscall ;
+  write_syscall.syscall_number = 16;
+  // write_syscall.syscall_name = "write";
+  write_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&write_syscall.time);
+  write_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = write_syscall;
+  curproc->number_of_systemcalls++;
+
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0)
     return -1;
   return filewrite(f, p, n);
@@ -95,6 +135,19 @@ sys_close(void)
 {
   int fd;
   struct file *f;
+  struct proc *curproc = myproc();
+  struct systemcall close_syscall ;
+  close_syscall.syscall_number = 21;
+  // close_syscall.syscall_name = "close";
+  close_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&close_syscall.time);
+  close_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = close_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argfd(0, &fd, &f) < 0)
     return -1;
@@ -109,6 +162,20 @@ sys_fstat(void)
   struct file *f;
   struct stat *st;
 
+  struct proc *curproc = myproc();
+  struct systemcall fstat_syscall ;
+  fstat_syscall.syscall_number = 8;
+  // fstat_syscall.syscall_name = "fstat";
+  fstat_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&fstat_syscall.time);
+  fstat_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = fstat_syscall;
+  curproc->number_of_systemcalls++;
+
   if(argfd(0, 0, &f) < 0 || argptr(1, (void*)&st, sizeof(*st)) < 0)
     return -1;
   return filestat(f, st);
@@ -120,6 +187,21 @@ sys_link(void)
 {
   char name[DIRSIZ], *new, *old;
   struct inode *dp, *ip;
+
+  struct proc *curproc = myproc();
+  struct systemcall link_syscall ;
+  link_syscall.syscall_number = 19;
+  // link_syscall.syscall_name = "link";
+  link_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&link_syscall.time);
+  link_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = link_syscall;
+  curproc->number_of_systemcalls++;
+
 
   if(argstr(0, &old) < 0 || argstr(1, &new) < 0)
     return -1;
@@ -188,6 +270,20 @@ sys_unlink(void)
   struct dirent de;
   char name[DIRSIZ], *path;
   uint off;
+
+  struct proc *curproc = myproc();
+  struct systemcall unlink_syscall ;
+  unlink_syscall.syscall_number = 18;
+  // unlink_syscall.syscall_name = "unlink";
+  unlink_syscall.syscall_name[6] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&unlink_syscall.time);
+  unlink_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = unlink_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argstr(0, &path) < 0)
     return -1;
@@ -291,6 +387,20 @@ sys_open(void)
   struct file *f;
   struct inode *ip;
 
+  struct proc *curproc = myproc();
+  struct systemcall open_syscall ;
+  open_syscall.syscall_number = 15;
+  // open_syscall.syscall_name = "open";
+  open_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&open_syscall.time);
+  open_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = open_syscall;
+  curproc->number_of_systemcalls++;
+
   if(argstr(0, &path) < 0 || argint(1, &omode) < 0)
     return -1;
 
@@ -339,6 +449,20 @@ sys_mkdir(void)
   char *path;
   struct inode *ip;
 
+  struct proc *curproc = myproc();
+  struct systemcall mkdir_syscall ;
+  mkdir_syscall.syscall_number = 20;
+  // mkdir_syscall.syscall_name = "mkdir";
+  mkdir_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&mkdir_syscall.time);
+  mkdir_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = mkdir_syscall;
+  curproc->number_of_systemcalls++;
+
   begin_op();
   if(argstr(0, &path) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0){
     end_op();
@@ -355,6 +479,20 @@ sys_mknod(void)
   struct inode *ip;
   char *path;
   int major, minor;
+
+  struct proc *curproc = myproc();
+  struct systemcall mknod_syscall ;
+  mknod_syscall.syscall_number = 17;
+  // mknod_syscall.syscall_name = "mknod";
+  mknod_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&mknod_syscall.time);
+  mknod_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = mknod_syscall;
+  curproc->number_of_systemcalls++;
 
   begin_op();
   if((argstr(0, &path)) < 0 ||
@@ -375,6 +513,18 @@ sys_chdir(void)
   char *path;
   struct inode *ip;
   struct proc *curproc = myproc();
+  struct systemcall chdir_syscall ;
+  chdir_syscall.syscall_number = 9;
+  // chdir_syscall.syscall_name = "chdir";
+  chdir_syscall.syscall_name[5] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&chdir_syscall.time);
+  chdir_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = chdir_syscall;
+  curproc->number_of_systemcalls++;
   
   begin_op();
   if(argstr(0, &path) < 0 || (ip = namei(path)) == 0){
@@ -400,6 +550,19 @@ sys_exec(void)
   char *path, *argv[MAXARG];
   int i;
   uint uargv, uarg;
+  struct proc *curproc = myproc();
+  struct systemcall exec_syscall ;
+  exec_syscall.syscall_number = 7;
+  // exec_syscall.syscall_name = "exec";
+  exec_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&exec_syscall.time);
+  exec_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = exec_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0){
     return -1;
@@ -426,6 +589,20 @@ sys_pipe(void)
   int *fd;
   struct file *rf, *wf;
   int fd0, fd1;
+
+  struct proc *curproc = myproc();
+  struct systemcall pipe_syscall ;
+  pipe_syscall.syscall_number = 4;
+  // pipe_syscall.syscall_name = "pipe";
+  pipe_syscall.syscall_name[4] = '\0';
+  //wait_syscall->time = malloc(sizeof(struct rtcdate));
+  cmostime(&pipe_syscall.time);
+  pipe_syscall.caller_pid = curproc->pid;
+  //wait_syscall->argumants = malloc(sizeof(char * 4));
+  //wait_syscall->argumants = "void";
+  //wait_syscall->argumants[4] = '\0';
+  curproc->syscalls[curproc->number_of_systemcalls] = pipe_syscall;
+  curproc->number_of_systemcalls++;
 
   if(argptr(0, (void*)&fd, 2*sizeof(fd[0])) < 0)
     return -1;

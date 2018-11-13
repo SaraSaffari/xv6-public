@@ -120,6 +120,10 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+void			invoked_syscalls(int pid);
+void			sort_syscalls(int pid);
+int 			get_count(int pid,int sysnum);
+void			log_syscalls();
 
 // swtch.S
 void            swtch(struct context**, struct context*);

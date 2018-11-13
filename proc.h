@@ -1,3 +1,5 @@
+#include "date.h"
+
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -31,6 +33,19 @@ struct context {
   uint ebp;
   uint eip;
 };
+struct arguments{
+  char type[10];
+  char value[10];
+}
+
+struct systemcall {
+  int syscall_number;
+  char syscall_name[30];
+  struct rtcdate time;
+  int caller_pid;
+  arguments[3];
+  // char* argumants[10];
+};
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
@@ -49,6 +64,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  struct systemcall syscalls[200]; //process's used systemcalls
+  int number_of_systemcalls;
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -56,3 +73,6 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+
+
