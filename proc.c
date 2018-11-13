@@ -658,6 +658,90 @@ procdump(void)
   }
 }
 // int map_syscall_id_to_name
+char * sysnumber_to_name(int sysnum)
+{
+  //char name [30];
+  switch(sysnum)
+  {
+    case 1:
+      return "fork";
+    case 2:
+      return "exit";
+    case 3:
+       return  "wait";
+
+    case 4:
+       return "pipe";
+
+       return "read";
+
+    case 6:
+       return "kill";
+    case 7:
+       return "exec";
+
+    case 8:
+       return "fstat";
+
+    case 9:
+       return "chdir";
+
+    case 10:
+       return "dup";
+
+    case 11:
+       return "getpid";
+
+    case 12:
+       return "sbrk";
+
+    case 13: 
+       return "sleep";
+
+    case 14:
+       return "uptime";
+
+    case 15:
+       return "open";
+
+    case 16:
+       return "write";
+
+    case 17:
+       return "mknod";
+
+    case 18:
+       return "unlink";
+
+    case 19:
+       return "link";
+
+    case 20:
+       return "mkdir";
+
+    case 21:
+       return "close";
+
+    case 22:
+       return "inc_num";
+
+    case 23:
+       return "invoked_syscalls"
+  ;
+    case 24:
+       return "sort_syscalls";
+  ;
+    case 25:
+       return "get_count";
+
+       return "log_syscalls";
+  ;
+    default:
+       return "no_name";
+  }
+}
+
+
 void invoked_syscalls(int pid)
 {
   struct proc *p;
@@ -667,7 +751,7 @@ void invoked_syscalls(int pid)
     if(p->pid == pid){
       for (i = 0; i<p->number_of_systemcalls;i++)
       {
-        cprintf("%d %s %d \n",p->syscalls[i].syscall_number,p->syscalls[i].syscall_name,p->syscalls[i].caller_pid);
+        cprintf("%d %s %d \n",p->syscalls[i].syscall_number,sysnumber_to_name(p->syscalls[i].syscall_number),p->syscalls[i].caller_pid);
       }
       return;
     }

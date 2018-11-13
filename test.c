@@ -15,7 +15,7 @@ int main(int argc,char * argv[])
 		int t = getpid();
 		wait();
 		invoked_syscalls(t);
-		invoked_syscalls(pid);
+		//invoked_syscalls(pid);
 	}
 	exit();
 
