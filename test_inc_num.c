@@ -7,4 +7,5 @@ int
 main(int argc, char * argv[])
 {
 	// inc_num(23);
+	exit();
 }
